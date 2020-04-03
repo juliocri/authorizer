@@ -19,7 +19,7 @@ all: $(TESTS)
 
 $(TESTS):
 	@$(BIN) < $@/in | tee $@/result > /dev/null
-	@DIFF=`diff $@/out $@/result | tee` && \
+	@DIFF=`diff -w $@/out $@/result | tee` && \
 	if [ -z "$$DIFF" ]; \
 	then echo $@:OK.; \
 	else echo $@:FAIL.; \
