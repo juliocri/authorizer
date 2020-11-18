@@ -3,6 +3,7 @@
 // *                                                                  *
 // * 2020-03-15 First Version, JR                                     *
 // * 2020-03-18 Adds multiple violation scnario, JR                   *
+// * 2020-11-18 Simplifies transaction tests in a single function, JR *
 // *                                                                  *
 // * This file contains all unit testing related with executer.       *                                                    *
 // *                                                                  *
@@ -133,106 +134,20 @@ func TestInitExecuter(t *testing.T) {
 	)
 }
 
-// Test transaction with account not initialized.
-func TestNotAccountInitializedTransaction(t *testing.T) {
-	exe := Init()
-	assert := assert.New(t)
-	for index, value := range tinputs["notInitialized"]["out"] {
-		assert.Equal(
-			value,
-			exe.Exec(tinputs["notInitialized"]["in"][index]),
-			"Expected same output from execution.",
-		)
-	}
-}
+// Test all transaction types.
+func TestTransactions(t *testing.T) {
+	for key, data := range tinputs {
+		exe := Init()
+		assert := assert.New(t)
 
-// Test account not active transaction.
-func TestNotActiveAccountTransaction(t *testing.T) {
-	exe := Init()
-	assert := assert.New(t)
-	for index, value := range tinputs["NotActive"]["out"] {
-		assert.Equal(
-			value,
-			exe.Exec(tinputs["NotActive"]["in"][index]),
-			"Expected same output from execution.",
-		)
-	}
-}
-
-// Test account operation with account already initialized.
-func TestAlreadyinitializedAccountTransaction(t *testing.T) {
-	exe := Init()
-	assert := assert.New(t)
-	for index, value := range tinputs["AlreadyInitialized"]["out"] {
-		assert.Equal(
-			value,
-			exe.Exec(tinputs["AlreadyInitialized"]["in"][index]),
-			"Expected same output from execution.",
-		)
-	}
-}
-
-// Test operation with account limit not sufficient.
-func TestInsuficientLimitTransaction(t *testing.T) {
-	exe := Init()
-	assert := assert.New(t)
-	for index, value := range tinputs["insufficientLimit"]["out"] {
-		assert.Equal(
-			value,
-			exe.Exec(tinputs["insufficientLimit"]["in"][index]),
-			"Expected same output from execution.",
-		)
-	}
-}
-
-// Test a doubled transation.
-func TestDoubledTransaction(t *testing.T) {
-	exe := Init()
-	assert := assert.New(t)
-	for index, value := range tinputs["DoubledTransaction"]["out"] {
-		assert.Equal(
-			value,
-			exe.Exec(tinputs["DoubledTransaction"]["in"][index]),
-			"Expected same output from execution.",
-		)
-	}
-}
-
-// Test a Blocked merchant transation.
-func TestBlockedMerchantTransaction(t *testing.T) {
-	exe := Init()
-	assert := assert.New(t)
-	for index, value := range tinputs["blockedMerchant"]["out"] {
-		assert.Equal(
-			value,
-			exe.Exec(tinputs["blockedMerchant"]["in"][index]),
-			"Expected same output from execution.",
-		)
-	}
-}
-
-// Test a high frequency limit break transaction.
-func TestHighFrequencyTransaction(t *testing.T) {
-	exe := Init()
-	assert := assert.New(t)
-	for index, value := range tinputs["HighFrequency"]["out"] {
-		assert.Equal(
-			value,
-			exe.Exec(tinputs["HighFrequency"]["in"][index]),
-			"Expected same output from execution.",
-		)
-	}
-}
-
-// Test a high frequency limit break and doubled transaction.
-func TestHighFrequencyDoubledTransaction(t *testing.T) {
-	exe := Init()
-	assert := assert.New(t)
-	for index, value := range tinputs["HighFrequencyDoubled"]["out"] {
-		assert.Equal(
-			value,
-			exe.Exec(tinputs["HighFrequencyDoubled"]["in"][index]),
-			"Expected same output from execution.",
-		)
+		t.Run(fmt.Sprintf("%s", key), func(t *testing.T) {
+			for index, value := range data["out"] {
+				assert.Equal(
+					value,
+					exe.Exec(data["in"][index]),
+					"Expected same output from execution.",
+				)
+			}
+		})
 	}
 }
