@@ -1,5 +1,5 @@
 {"account": {"active-card": true, "available-limit": 100}}
-{"transaction": {"merchant": "Burger King1", "amount": 20, "time": "2019-02-13T10:00:00.000Z"}}
-{"transaction": {"merchant": "Burger King2", "amount": 30, "time": "2019-02-13T10:00:30.000Z"}}
-{"transaction": {"merchant": "Burger King3", "amount": 10, "time": "2019-02-13T10:01:00.000Z"}}
-{"transaction": {"merchant": "Burger King3", "amount": 10, "time": "2019-02-13T10:01:00.000Z"}}
+{"transaction": {"merchant": "Burger Queen1", "amount": 20, "time": "2019-02-13T10:00:00.000Z"}}
+{"transaction": {"merchant": "Burger Queen2", "amount": 30, "time": "2019-02-13T10:00:30.000Z"}}
+{"transaction": {"merchant": "Burger Queen3", "amount": 10, "time": "2019-02-13T10:01:00.000Z"}}
+{"transaction": {"merchant": "Burger Queen3", "amount": 10, "time": "2019-02-13T10:01:00.000Z"}}

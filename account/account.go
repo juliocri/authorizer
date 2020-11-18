@@ -2,7 +2,7 @@
 // * account.go                                                       *
 // *                                                                  *
 // * 2020-03-13 First Version, JR                                     *
-// *                                                                  *
+// * 2020-11-17 Adds Blocked merchant feature                         *
 // * This package holds all bussiness logic related with an account.  *
 // *                                                                  *
 // * Usage:                                                           *
@@ -31,6 +31,11 @@ var Violations = map[int]string{
 	3: "insufficient-limit",
 	4: "doubled-transaction",
 	5: "high-frequency-small-interval",
+	6: "blocked-merchant",
+}
+
+var blockedlist = []string{
+	"Burger King",
 }
 
 // Account - stores limit, state and authorized transactions,
@@ -103,11 +108,13 @@ func (acn *Account) ApplyTransaction(tsn *Transaction) []int {
 			if duplicated {
 				violations = append(violations, 4)
 			}
+
 			// Or if we don't reach the frequency limit.
 			overpassed := acn.frenquencyOverpass(tsn)
 			if overpassed {
 				violations = append(violations, 5)
 			}
+
 			// Finally if  not duplicated nor overpassed, we check if the account,
 			// has enoght limit to execute the transation.
 			if !duplicated && !overpassed {
@@ -115,6 +122,13 @@ func (acn *Account) ApplyTransaction(tsn *Transaction) []int {
 					violations = append(violations, 3)
 				}
 			}
+
+			// Check if the merchant is not blocked
+			merchantBlocked := acn.merchantBlocked(tsn)
+			if merchantBlocked {
+				violations = append(violations, 6)
+			}
+
 		} else {
 			// Card not active.
 			violations = append(violations, 1)
@@ -131,6 +145,18 @@ func (acn *Account) ApplyTransaction(tsn *Transaction) []int {
 	}
 
 	return violations
+}
+
+// merchantBlocked - return a boolean if the transaction merchant is within
+// the blockedlist.
+func (acn *Account) merchantBlocked(tsn *Transaction) bool {
+	for _, val := range blockedlist {
+		if tsn.Merchant == val {
+			return true
+		}
+	}
+
+	return false
 }
 
 // registryTransaction - Adds a new transation to the account authored,

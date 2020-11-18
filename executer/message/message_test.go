@@ -17,7 +17,7 @@ import (
 )
 
 // Max int code value allowed to violations references.
-const maxValidCode = 5
+const maxValidCode = 6
 
 // Test Messages to cover our unit testing.
 var tmsgs = map[string]*Message{

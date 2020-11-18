@@ -23,7 +23,7 @@ var tinputs = map[string]map[string][]string{
 
 	"notInitialized": {
 		"in": []string{
-			`{"transaction": {"merchant": "Burger King", "amount": 20, "time": "2019-02-13T10:00:00.000Z"}}`,
+			`{"transaction": {"merchant": "Burger Queen", "amount": 20, "time": "2019-02-13T10:00:00.000Z"}}`,
 		},
 		"out": []string{
 			fmt.Sprintf(`{"account": {}, "violations": ["%v"]}`, account.Violations[0]),
@@ -33,7 +33,7 @@ var tinputs = map[string]map[string][]string{
 	"NotActive": {
 		"in": []string{
 			`{"account": {"active-card": false, "available-limit": 100}}`,
-			`{"transaction": {"merchant": "Burger King", "amount": 20, "time": "2019-02-13T10:00:00.000Z"}}`,
+			`{"transaction": {"merchant": "Burger Queen", "amount": 20, "time": "2019-02-13T10:00:00.000Z"}}`,
 		},
 		"out": []string{
 			`{"account": {"active-card": false, "available-limit": 100}, "violations": []}`,
@@ -52,10 +52,21 @@ var tinputs = map[string]map[string][]string{
 		},
 	},
 
+	"blockedMerchant": {
+		"in": []string{
+			`{"account": {"active-card": true, "available-limit": 100}}`,
+			`{"transaction": {"merchant": "Burger King", "amount": 100, "time": "2019-02-13T10:00:00.000Z"}}`,
+		},
+		"out": []string{
+			`{"account": {"active-card": true, "available-limit": 100}, "violations": []}`,
+			fmt.Sprintf(`{"account": {"active-card": true, "available-limit": 100}, "violations": ["%v"]}`, account.Violations[6]),
+		},
+	},
+
 	"insufficientLimit": {
 		"in": []string{
 			`{"account": {"active-card": true, "available-limit": 100}}`,
-			`{"transaction": {"merchant": "Burger King", "amount": 200, "time": "2019-02-13T10:00:00.000Z"}}`,
+			`{"transaction": {"merchant": "Burger Queen", "amount": 200, "time": "2019-02-13T10:00:00.000Z"}}`,
 		},
 		"out": []string{
 			`{"account": {"active-card": true, "available-limit": 100}, "violations": []}`,
@@ -66,8 +77,8 @@ var tinputs = map[string]map[string][]string{
 	"DoubledTransaction": {
 		"in": []string{
 			`{"account": {"active-card": true, "available-limit": 100}}`,
-			`{"transaction": {"merchant": "Burger King", "amount": 50, "time": "2019-02-13T10:00:00.000Z"}}`,
-			`{"transaction": {"merchant": "Burger King", "amount": 50, "time": "2019-02-13T10:01:00.000Z"}}`,
+			`{"transaction": {"merchant": "Burger Queen", "amount": 50, "time": "2019-02-13T10:00:00.000Z"}}`,
+			`{"transaction": {"merchant": "Burger Queen", "amount": 50, "time": "2019-02-13T10:01:00.000Z"}}`,
 		},
 		"out": []string{
 			`{"account": {"active-card": true, "available-limit": 100}, "violations": []}`,
@@ -79,10 +90,10 @@ var tinputs = map[string]map[string][]string{
 	"HighFrequency": {
 		"in": []string{
 			`{"account": {"active-card": true, "available-limit": 100}}`,
-			`{"transaction": {"merchant": "Burger King1", "amount": 20, "time": "2019-02-13T10:00:00.000Z"}}`,
-			`{"transaction": {"merchant": "Burger King2", "amount": 30, "time": "2019-02-13T10:00:30.000Z"}}`,
-			`{"transaction": {"merchant": "Burger King3", "amount": 10, "time": "2019-02-13T10:01:00.000Z"}}`,
-			`{"transaction": {"merchant": "Burger King", "amount": 10, "time": "2019-02-13T10:02:00.000Z"}}`,
+			`{"transaction": {"merchant": "Burger Queen1", "amount": 20, "time": "2019-02-13T10:00:00.000Z"}}`,
+			`{"transaction": {"merchant": "Burger Queen2", "amount": 30, "time": "2019-02-13T10:00:30.000Z"}}`,
+			`{"transaction": {"merchant": "Burger Queen3", "amount": 10, "time": "2019-02-13T10:01:00.000Z"}}`,
+			`{"transaction": {"merchant": "Burger Queen", "amount": 10, "time": "2019-02-13T10:02:00.000Z"}}`,
 		},
 		"out": []string{
 			`{"account": {"active-card": true, "available-limit": 100}, "violations": []}`,
@@ -96,10 +107,10 @@ var tinputs = map[string]map[string][]string{
 	"HighFrequencyDoubled": {
 		"in": []string{
 			`{"account": {"active-card": true, "available-limit": 100}}`,
-			`{"transaction": {"merchant": "Burger King1", "amount": 20, "time": "2019-02-13T10:00:00.000Z"}}`,
-			`{"transaction": {"merchant": "Burger King2", "amount": 30, "time": "2019-02-13T10:00:30.000Z"}}`,
-			`{"transaction": {"merchant": "Burger King", "amount": 10, "time": "2019-02-13T10:01:00.000Z"}}`,
-			`{"transaction": {"merchant": "Burger King", "amount": 10, "time": "2019-02-13T10:01:00.000Z"}}`,
+			`{"transaction": {"merchant": "Burger Queen1", "amount": 20, "time": "2019-02-13T10:00:00.000Z"}}`,
+			`{"transaction": {"merchant": "Burger Queen2", "amount": 30, "time": "2019-02-13T10:00:30.000Z"}}`,
+			`{"transaction": {"merchant": "Burger Queen", "amount": 10, "time": "2019-02-13T10:01:00.000Z"}}`,
+			`{"transaction": {"merchant": "Burger Queen", "amount": 10, "time": "2019-02-13T10:01:00.000Z"}}`,
 		},
 		"out": []string{
 			`{"account": {"active-card": true, "available-limit": 100}, "violations": []}`,
@@ -174,7 +185,7 @@ func TestInsuficientLimitTransaction(t *testing.T) {
 	}
 }
 
-// Test a dpubled transation.
+// Test a doubled transation.
 func TestDoubledTransaction(t *testing.T) {
 	exe := Init()
 	assert := assert.New(t)
@@ -182,6 +193,19 @@ func TestDoubledTransaction(t *testing.T) {
 		assert.Equal(
 			value,
 			exe.Exec(tinputs["DoubledTransaction"]["in"][index]),
+			"Expected same output from execution.",
+		)
+	}
+}
+
+// Test a Blocked merchant transation.
+func TestBlockedMerchantTransaction(t *testing.T) {
+	exe := Init()
+	assert := assert.New(t)
+	for index, value := range tinputs["blockedMerchant"]["out"] {
+		assert.Equal(
+			value,
+			exe.Exec(tinputs["blockedMerchant"]["in"][index]),
 			"Expected same output from execution.",
 		)
 	}
