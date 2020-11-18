@@ -14,7 +14,7 @@
 
 ## Authorizer
 
-The auhorizer app is writtern in [GoLang](https://golang.org/), language which have its own [Docker official image](https://hub.docker.com/_/golang), so is strongly recommended to usage of the pre-built image to have the most possible similar setup and be consistent with commands used for `build`, `test` and `execute` the application. This project contains their own `Dockerfile` to create a container with all dependencies and the application binary already built and ready to be used.
+The auhorizer app is written in [GoLang](https://golang.org/), language which have its own lightweight [Docker official image](https://hub.docker.com/layers/golang/library/golang/alpine/images/sha256-5c366c46efa8ac883854a3009a957213cbb1813dbc1f47def1764b774c00ae32?context=explore), so is strongly recommended the usage of the pre-built image to have the most possible similar setup and be consistent with commands used for `build`, `test` and `execute` the application. This project contains their own `Dockerfile` to create a container with all dependencies and the application binary already built and ready to be used.
 
 As a part to have mostly automated this project also contains a main `Makefile` with rules that executes all commands required to build, run unit testing, run code coverage, and end to end testing, same steps that below in this documentation are explained.
 
@@ -34,19 +34,19 @@ All project packages includes its own unit testing file with their test's scenar
 
 To retrieve unit testing results, execute the go native test suit command, as shown below:
 
-* $`docker run -i authorizer:go make unit-test`
+* $`docker run -i --entrypoint="make" authorizer:go unit-test`
 
 ### Code coverage
 
 As same as go handles unit tasting natively, go can handle code coverage with same tool, to see percentiles related with the current code coverage from our application we can run the next command:
 
-* $`docker run -i authorizer:go make cover`
+* $`docker run -i --entrypoint="make" authorizer:go cover`
 
 ### e2e tests
 
 This project contains scripts to test the authorizer application from end to end (e2e), those scripts automates the application execution with a defined `in` sample in order to get an expected `out`, if the `result` of a test is different from the `out` the the test report that test scenario as `FAIL`, otherwise the test scenario reports an `OK`, to run the e2e tests is necessary to execute next command line:
 
-* $`docker run -i authorizer:go make test`
+* $`docker run -i --entrypoint="make" authorizer:go test`
 
 Test scenarios can be added easily to the e2e, this can be done adding a new directory inside `./test`, the test scenario only needs 2 files inside, `in` which contains all our `json` lines input to execute, and `out` that represents the expected output.
 
@@ -56,4 +56,4 @@ NOTE: ** Take in consideration: all changes to the app needs a new docker build.
 
 To run the application we only need to run the next single command, replacing `$FILE` for the real path of the file which contains the `json` input operations to execute:
 
-* $`docker run -i authorizer:go authorizer < $FILE`
+* $`docker run -i authorizer:go < $FILE`
